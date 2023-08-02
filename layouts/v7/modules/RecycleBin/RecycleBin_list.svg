@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+    <title>Recycle Bin  - black</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Recycle-Bin----black" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="trash" transform="translate(3.000000, 2.000000)" stroke="#777777" stroke-width="2">
+            <path d="M16.875,4.44444444 L15.8992875,17.9361111 C15.8151375,19.099 14.835375,20 13.655025,20 L4.34502,20 C3.16458,20 2.18484,19.099 2.100735,17.9361111 L1.125,4.44444444 M6.75,8.88888889 L6.75,15.5555556 M11.25,8.88888889 L11.25,15.5555556 M12.375,4.44444444 L12.375,1.11111111 C12.375,0.497466667 11.8713375,0 11.25,0 L6.75,0 C6.128685,0 5.625,0.497466667 5.625,1.11111111 L5.625,4.44444444 M0,4.44444444 L18,4.44444444" id="Shape"></path>
+        </g>
+    </g>
+</svg>

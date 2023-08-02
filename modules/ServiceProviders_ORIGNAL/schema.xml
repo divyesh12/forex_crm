@@ -1,0 +1,29 @@
+<?xml version='1.0'?>
+<schema>
+	<tables>
+		<table>
+			<name>vtiger_serviceproviders</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_serviceproviders` (
+                                                  `serviceprovidersid` int(11) NOT NULL ,
+                                                  `service_provider_name` varchar(255) DEFAULT NULL,
+                                                  PRIMARY KEY (`serviceprovidersid`)
+                                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+		<table>
+			<name>vtiger_serviceproviderscf</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_serviceproviderscf` (
+                                                  `serviceprovidersid` int(11) NOT NULL,
+                                                  PRIMARY KEY (`serviceprovidersid`)
+                                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+		<table>
+			<name>vtiger_serviceproviders_user_field</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_serviceproviders_user_field` (
+                                                                        `recordid` int(25) NOT NULL,
+                                                                        `userid` int(25) NOT NULL,
+                                                                        `starred` varchar(100) DEFAULT NULL,
+                                                                        KEY `fk_serviceprovidersid_vtiger_serviceproviders_user_field` (`recordid`)
+                                                                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+	</tables>
+</schema>

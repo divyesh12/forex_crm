@@ -1,0 +1,80 @@
+<?php
+
+/* * *******************************************************************************
+ * * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is:  vtiger CRM Open Source
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (C) vtiger.
+ * All Rights Reserved.
+ *
+ * ****************************************************************************** */
+
+require_once('include/utils/utils.php');
+require_once('include/logging.php');
+require_once('modules/CampaignActivity/models/Module.php');
+
+global $adb, $log, $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID;
+$log =& LoggerManager::getLogger('CampaignActivityCron');
+$log->debug("invoked CampaignActivityCron");
+
+$db = PearDatabase::getInstance();
+
+$default_timezone = vglobal('default_timezone');
+$admin = Users::getActiveAdminUser();
+$adminTimeZone = $admin->time_zone;
+@date_default_timezone_set($adminTimeZone);
+$currentTimestamp  = date("Y-m-d H:i:s");
+@date_default_timezone_set($default_timezone);
+
+$scheduledActivities = CampaignActivity_Module_Model::getScheduledCampaignActivity($currentTimestamp);//pr($scheduledActivities);
+if(count($scheduledActivities) > 0)
+{
+    foreach($scheduledActivities as $key => $scheduledActivity)
+    {
+        CampaignActivity_Module_Model::updateCampaignActivityCronStatus('In Progress', $scheduledActivity['campaignactivityid']);
+        $requestForTriggerTime['schtypeid'] = $scheduledActivity['schtypeid'];
+        $requestForTriggerTime['schdate'] = $scheduledActivity['schdate'];
+        $requestForTriggerTime['schdayofmonth'] = $scheduledActivity['schdayofmonth'];
+        $requestForTriggerTime['schtime'] = $scheduledActivity['schtime'];
+        $requestForTriggerTime['schdayofweek'] = $scheduledActivity['schdayofweek'];
+        CampaignActivity_Module_Model::updateNexTriggerTime($scheduledActivity['campaignactivityid'],$requestForTriggerTime);
+        
+        $module = $scheduledActivity['campaign_activity_module'];
+        switch($module)
+        {
+            case 'Leads' : 
+                    $emailLists = CampaignActivity_Module_Model::getLeadData($scheduledActivity['campaign_id']);
+                    break; 
+            case 'Contacts' :  
+                    $emailLists = CampaignActivity_Module_Model::getContactData($scheduledActivity['campaign_id']);
+                    break; 
+            default : 
+                CampaignActivity_Module_Model::updateCampaignActivityCronStatus('Not Started', $scheduledActivity['campaignactivityid']);
+                break;
+        }
+        foreach ($emailLists as $id => $emailId)
+        {
+            if(!empty($emailId) && !empty($id))
+            {
+                $emailData = array();
+                $emailData['campaignactivityid'] = $scheduledActivity['campaignactivityid'];
+                $emailData['to_email'] = $emailId;
+                $subject = $scheduledActivity['campaign_activity_subject'];
+                $emailData['subject'] = decode_html(getMergedDescription($subject, $id, 'Contacts'));
+                $body = $scheduledActivity['campaign_activity_template'];
+                $emailData['body'] = getMergedDescription($body, $id, $module);
+                CampaignActivity_Module_Model::sendCampaignActivityEmail($emailData);
+            }
+        }
+        $finalStatus = 'Active';
+        if($scheduledActivity['schtypeid'] === '4')
+        {
+            $finalStatus = 'Completed';
+        }
+        CampaignActivity_Module_Model::updateCampaignActivityCronStatus($finalStatus, $scheduledActivity['campaignactivityid']);
+    }
+}
+
+
+?>

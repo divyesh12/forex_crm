@@ -1,0 +1,29 @@
+<?xml version='1.0'?>
+                                                                                    <schema>
+                                                                                          <tables>
+                                                                                                <table>
+                                                                                                      <name>vtiger_tradescommission</name>
+                                                                                                      <sql><![CDATA[CREATE TABLE `vtiger_tradescommission` (
+                                                                                        `tradescommissionid` int(11) NOT NULL DEFAULT '0',
+                                                                                          `parent_contactid` varchar(255) DEFAULT NULL,
+                                                                                          PRIMARY KEY (`tradescommissionid`)
+                                                                                      ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+                                                                                                </table>
+                                                                                                <table>
+                                                                                                      <name>vtiger_tradescommissioncf</name>
+                                                                                                      <sql><![CDATA[CREATE TABLE `vtiger_tradescommissioncf` (
+                                                                                      `tradescommissionid` int(11) NOT NULL,
+                                                                                      PRIMARY KEY (`tradescommissionid`)
+                                                                                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+                                                                                                </table>
+                                                                                                <table>
+                                                                                                      <name>vtiger_tradescommission_user_field</name>
+                                                                                                      <sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_tradescommission_user_field` (
+                                                                                                      `recordid` int(25) NOT NULL,
+                                                                                                      `userid` int(25) NOT NULL,
+                                                                                                      `starred` varchar(100) DEFAULT NULL,
+                                                                                                      KEY `fk_tradescommissionid_vtiger_tradescommission_user_field` (`recordid`)
+                                                                                                      ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+                                                                                          </table>
+                                                                                          </tables>
+                                                                                    </schema>

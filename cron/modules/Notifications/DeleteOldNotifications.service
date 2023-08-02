@@ -1,0 +1,61 @@
+<?php
+
+/* * *******************************************************************************
+ * * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is:  vtiger CRM Open Source
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (C) vtiger.
+ * All Rights Reserved.
+ *
+ * ****************************************************************************** */
+
+require_once('include/utils/utils.php');
+require_once('include/logging.php');
+
+global $adb, $log;
+$log =& LoggerManager::getLogger('DeleteOldNotifications');
+$log->debug("invoked DeleteOldNotifications");
+
+$currentDate = date('Y-m-d');
+$currentDateStrTime = strtotime($currentDate);
+
+$db = PearDatabase::getInstance();
+
+$query = "SELECT crmid FROM vtiger_crmentity WHERE setype = 'Notifications' AND DATE_FORMAT(createdtime,'%Y-%m-%d') <= DATE_FORMAT(date_sub(now(),INTERVAL 1 WEEK),'%Y-%m-%d')";
+$notificationResult = $db->pquery($query, array());
+$noOfNotifications = $db->num_rows($notificationResult);
+
+if($noOfNotifications > 0)
+{
+    for($i=0; $i<$noOfNotifications;$i++)
+    {
+        $recordIdsArr[] = $db->query_result($notificationResult, $i, 'crmid');
+    }
+    
+    $recordIds = implode("','", $recordIdsArr);
+
+    $query = 'DELETE FROM vtiger_relatedlists_rb WHERE entityid in('.generateQuestionMarks($recordIds).')';
+    $db->pquery($query, array($recordIdsArr));
+
+    // TODO - Remove records from module tables and other related stores.
+    $query = 'DELETE FROM vtiger_modtracker_basic WHERE crmid in(' . generateQuestionMarks($recordIds) . ')';
+    $db->pquery($query, array($recordIdsArr));
+
+    //Delete the records in vtiger crmentity and relatedlists.
+    $query = 'DELETE FROM vtiger_crmentity WHERE crmid in('.generateQuestionMarks($recordIds).')';
+    $db->pquery($query, array($recordIdsArr));
+
+    //Delete the records in vtiger crmentityrel.
+    $query = 'DELETE FROM vtiger_crmentityrel WHERE relmodule = "Notifications" and relcrmid in('.generateQuestionMarks($recordIds).')';
+    $db->pquery($query, array($recordIdsArr));
+
+    //Delete the records in vtiger_notifications.
+    $query = 'DELETE FROM vtiger_notifications WHERE notificationsid in('.generateQuestionMarks($recordIds).')';
+    $db->pquery($query, array($recordIdsArr));
+
+    //Delete the records in vtiger_notifications.
+    $query = 'DELETE FROM vtiger_notificationscf WHERE notificationsid in('.generateQuestionMarks($recordIds).')';
+    $db->pquery($query, array($recordIdsArr));
+}
+?>

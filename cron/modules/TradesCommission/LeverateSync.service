@@ -1,0 +1,200 @@
+<?php
+
+/* * *******************************************************************************
+ * * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is:  vtiger CRM Open Source
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (C) vtiger.
+ * All Rights Reserved.
+ *
+ * ****************************************************************************** */
+
+include_once('config.php');
+require_once('vtlib/Vtiger/Net/Client.php');
+ini_set('memory_limit','2048M');
+ini_set('max_execution_time', '300');
+
+try{
+    $openTradeObj = new Opentrade();
+    $groups = $openTradeObj->getGroupsUsingApi();
+    $openTrades = $openTradeObj->getOpenTradeUsingApi($groups);
+    if(!empty($openTrades))
+    {
+        $flushTable = $openTradeObj->flushOpenTradeTable();
+        if($flushTable)
+        {
+            $updateResult = $openTradeObj->updateNewOpenTrades($openTrades);
+            if($updateResult)
+            {
+                echo "Open trades updated successfully.";
+            }
+        }
+    }
+}
+catch (Exception $e) {
+    throw new Exception($e->getMessage());
+}
+class Opentrade {
+    
+    public function __construct()
+    {
+    }
+
+    protected function headersParams($token = '') {
+        $headers = array();
+        if(!empty($token))
+        {
+            $headers = array('cache-control' => 'no-cache',
+                'content-type' => 'application/json',
+                'Authorization' => 'Bearer ' . $token,
+            );
+        }
+        return $headers;
+    }
+
+    protected function fireRequest($url, $headers, $params = array(), $method = 'POST') {
+        $httpCustomClient = new Vtiger_Net_Client($url);
+        if (count($headers)) {
+            $httpCustomClient->setHeaders($headers);
+        }
+
+        switch ($method) {
+            case 'POST':
+                $response = $httpCustomClient->doPostWithCode($params);
+                break;
+            case 'GET':
+                $response = $httpCustomClient->doGet($params);
+                break;
+        }
+        return $response;
+    }
+
+    public function getToken() {
+        global $log,$leverateLiveAccessToken;
+        $log->debug('Entering into getToken');
+        $providerCredential = $this->getProviderCredential();
+        if(!empty($providerCredential))
+        {
+            $meta_trader_ip = $providerCredential['url'];
+            $meta_trader_user = $providerCredential['username'];
+            $meta_trader_password = $providerCredential['password'];
+            $accessToken = $leverateLiveAccessToken;
+            $url = $meta_trader_ip.'api/ManagementService/VerifyUser';
+            $params = array("userID" => $meta_trader_user, "password" => $meta_trader_password);
+            $headers = $this->headersParams($accessToken);
+            $responseJson = $this->fireRequest($url, $headers, json_encode($params), 'POST');
+            $response = json_decode($responseJson,true);$log->debug($response);
+            $code = $response['UserVerificationResult'];$log->debug($code);
+            if ($code === 0) {//success
+                $response = array('Code' => 200, 'Message' => 'Ok', 'Url' => $meta_trader_ip.'api/ManagementService/', 'Data' => $accessToken, 'api_url' => $meta_trader_ip.'api/UserActions/');
+            } else {//Invalid username or password
+                $error = 'LBL_CREDENTIALS_ERROR';
+                $response = array('Code' => 201, 'Message' => $error);
+            }
+        }
+        else
+        {
+            $error = 'LBL_CREDENTIALS_ERROR';
+            $response = array('Code' => 201, 'Message' => $error);
+        }
+        
+        return (object) $response;
+    }
+
+    public function getProviderCredential() {
+        global $log,$adb;
+        $providerCredential = array();
+        $query = "SELECT parameters FROM vtiger_serviceproviders_servers WHERE providertype = 'Leverate' AND isactive = '1'";
+        $result = $adb->pquery($query);
+        $numRows = $adb->num_rows($result);
+        if($numRows > 0)
+        {
+            $parametersJson = $adb->query_result($result,0,'parameters');
+            $parametersJson = html_entity_decode($parametersJson);
+            $parameters = json_decode($parametersJson, true);
+            $providerCredential['url'] = $parameters['live_meta_trader_ip'];
+            $providerCredential['username'] = $parameters['live_meta_trader_user'];
+            $providerCredential['password'] = $parameters['live_meta_trader_password'];
+        }
+        return $providerCredential;
+    }
+
+    public function getGroupsUsingApi() {
+        global $log;
+        $groups = array();
+        $tokenResponse = $this->getToken();
+        if ($tokenResponse->Code == 200 && $tokenResponse->Message == 'Ok') {
+            $request_url = $tokenResponse->Url;
+            $token = $tokenResponse->Data;
+            $params = array();
+            $headers = $this->headersParams($token);
+            $url = $request_url . 'GetAllGroups';
+            $responseJson = $this->fireRequest($url, $headers, json_encode($params), 'POST');
+            $response = json_decode($responseJson, true);
+            $log->debug('Groups=');
+            $log->debug($response);
+            if(empty($response['ErrorMessage']) && !empty($response['Groups']))
+            {
+                foreach($response['Groups'] as $k => $groupData)
+                {
+                    $groups[] = $groupData['Name'];
+                }
+            }
+        }
+        return $groups;
+    }
+
+    public function getOpenTradeUsingApi($groups = array()) {
+        global $log;
+        $openTradeData = array();
+        $tokenResponse = $this->getToken();
+        if ($tokenResponse->Code == 200 && $tokenResponse->Message == 'Ok' && !empty($groups)) {
+            $request_url = $tokenResponse->Url;
+            $token = $tokenResponse->Data;
+            // $groups = array('TradingCompetition2020');
+            $params = array("groups" => $groups);
+            $headers = $this->headersParams($token);
+            $url = $request_url . 'GetOpenPositionsForGroups';
+            $responseJson = $this->fireRequest($url, $headers, json_encode($params), 'POST');
+            $response = json_decode($responseJson, true);
+            $log->debug('Getopentrade=');
+            $log->debug($response);
+            if(empty($response['ErrorMessage']) && !empty($response['OpenPositions']))
+            {
+                $openTradeData = $response['OpenPositions'];
+            }
+        }
+        return $openTradeData;
+    }
+
+    public function flushOpenTradeTable() {
+        global $log,$adb;
+        $sql = "TRUNCATE TABLE leverate_open_trade;";
+        $result = $adb->pquery($sql);
+        if($result)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public function updateNewOpenTrades($openTrades = array()) {
+        global $log, $adb;
+        if(!empty($openTrades))
+        {
+            $values = array();
+            foreach($openTrades as $key => $openTrade)
+            {
+                $values[] = "('" .$openTrade['UserID']. "','" .$openTrade['OrderID']. "','" .$openTrade['InstrumentName']. "','" .$openTrade['Amount']. "','" .$openTrade['FullAmount']. "','" .$openTrade['ActionType']. "','" .$openTrade['OpenTime']. "','" .$openTrade['OpenRate']. "','" .$openTrade['StopLoss']. "','" .$openTrade['TakeProfit']. "','" .$openTrade['ProfitInAccountCurrency']. "','" .$openTrade['RolloverInAccountCurrency']. "','" .$openTrade['CommissionInAccountCurrency']. "','" .$openTrade['CommissionForAgentInAccountCurrency']. "','" .$openTrade['Spread']. "','" .$openTrade['Comment']. "','" .$openTrade['CurrentRate']. "','" .$openTrade['MarginInDepositCurrency']. "','" .$openTrade['FullAmountInDepositCurrency']. "')";
+            }
+            $query = "INSERT INTO `leverate_open_trade`(`LOGIN`,`TICKET`, `SYMBOL`, `VOLUME`, `FULLAMOUNT`, `CMD`, `OPEN_TIME`, `OPEN_PRICE`, `SL`, `TP`, `PROFIT`, `ROLLOVERINACCOUNTCURRENCY`, `COMMISSION`, `COMMISSIONFORAGENTINACCOUNTCURRENCY`, `SPREAD`, `COMMENT`, `CURRENTRATE`, `MARGININDEPOSITCURRENCY`, `FULLAMOUNTINDEPOSITCURRENCY`) VALUES " . implode(',', $values) . ";";
+            $result = $adb->pquery($query);
+            if($result)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+}

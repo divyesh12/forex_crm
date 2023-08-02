@@ -1,0 +1,82 @@
+<?php
+
+/* * *******************************************************************************
+ * * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is:  vtiger CRM Open Source
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (C) vtiger.
+ * All Rights Reserved.
+ *
+ * ****************************************************************************** */
+
+require_once('include/utils/utils.php');
+require_once('include/logging.php');
+
+global $adb, $log, $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID;
+$log =& LoggerManager::getLogger('EmailDeletePeriodically');
+$log->debug("invoked EmailDeletePeriodically");
+
+$currentDate = date('Y-m-d');
+$currentDateStrTime = strtotime($currentDate);
+
+$db = PearDatabase::getInstance();
+
+$query = "SELECT mailid FROM `vtiger_email_track`
+INNER JOIN vtiger_crmentity vc1 ON vc1.crmid = vtiger_email_track.mailid
+INNER JOIN vtiger_crmentity vc2 ON vc2.crmid = vtiger_email_track.crmid
+WHERE vc2.setype != 'CampaignActivity' AND DATE_FORMAT(vc1.createdtime,'%Y-%m-%d') < DATE_FORMAT(date_sub(now(),INTERVAL 1 WEEK),'%Y-%m-%d')";
+$emailResult = $db->pquery($query, array());
+$noOfEmails = $db->num_rows($emailResult);
+
+if($noOfEmails > 0)
+{
+    for($i=0; $i<$noOfEmails;$i++)
+    {
+        $recordIdsArr[] = $db->query_result($emailResult, $i, 'mailid');
+    }
+    
+    $recordIds = implode("','", $recordIdsArr);
+
+    $query = 'DELETE FROM vtiger_relatedlists_rb WHERE entityid in('.generateQuestionMarks($recordIds).')';
+    $db->pquery($query, array($recordIdsArr));
+
+    // TODO - Remove records from module tables and other related stores.
+    $query = 'DELETE FROM vtiger_modtracker_basic WHERE crmid in(' . generateQuestionMarks($recordIds) . ')';
+    $db->pquery($query, array($recordIdsArr));
+
+    //Delete the records in vtiger crmentity and relatedlists.
+    $query = 'DELETE FROM vtiger_crmentity WHERE crmid in('.generateQuestionMarks($recordIds).')';
+    $db->pquery($query, array($recordIdsArr));
+
+    //Delete the records in vtiger crmentityrel.
+    $query = 'DELETE FROM vtiger_crmentityrel WHERE relmodule = "Emails" and relcrmid in('.generateQuestionMarks($recordIds).')';
+    $db->pquery($query, array($recordIdsArr));
+
+    //Delete the records in vtiger_email_track.
+    $query = 'DELETE FROM vtiger_email_track WHERE mailid in('.generateQuestionMarks($recordIds).')';
+    $db->pquery($query, array($recordIdsArr));
+
+    //Delete the records in vtiger_emaildetails.
+    $query = 'DELETE FROM vtiger_emaildetails WHERE emailid in('.generateQuestionMarks($recordIds).')';
+    $db->pquery($query, array($recordIdsArr));
+    
+    //Delete the records in vtiger_activity.
+    $query = 'DELETE FROM vtiger_activity WHERE activityid in('.generateQuestionMarks($recordIds).')';
+    $db->pquery($query, array($recordIdsArr));
+    
+    //Delete the records in vtiger_activitycf.
+    $query = 'DELETE FROM vtiger_activitycf WHERE activityid in('.generateQuestionMarks($recordIds).')';
+    $db->pquery($query, array($recordIdsArr));
+    
+    //Delete the records in vtiger_email_access.
+    $query = 'DELETE FROM vtiger_email_access WHERE mailid in('.generateQuestionMarks($recordIds).')';
+    $db->pquery($query, array($recordIdsArr));
+    
+    //Delete the records in vtiger_seactivityrel.
+    $query = 'DELETE FROM vtiger_seactivityrel WHERE activityid in('.generateQuestionMarks($recordIds).')';
+    $db->pquery($query, array($recordIdsArr));
+}
+
+
+?>

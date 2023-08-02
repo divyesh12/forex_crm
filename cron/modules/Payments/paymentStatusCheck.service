@@ -1,0 +1,139 @@
+<?php
+
+require_once('include/utils/utils.php');
+require_once('include/logging.php');
+require_once('include/Webservices/Update.php');
+require_once('data/CRMEntity.php');
+
+global $adb, $log;
+
+//$paymentQuery = "SELECT vtiger_payments.*,vtiger_crmentity.createdtime,vtiger_crmentity.smownerid FROM vtiger_payments INNER JOIN vtiger_crmentity ON vtiger_payments.paymentsid = vtiger_crmentity.crmid WHERE vtiger_crmentity.deleted = ? AND vtiger_payments.payment_status = ? AND (vtiger_payments.payment_from = ? OR vtiger_payments.payment_from = ?) AND vtiger_crmentity.createdtime < DATE_SUB(NOW(),INTERVAL 1 HOUR)";
+$paymentQuery = "SELECT vtiger_payments.*,vtiger_crmentity.createdtime,vtiger_crmentity.smownerid FROM vtiger_payments INNER JOIN vtiger_crmentity ON vtiger_payments.paymentsid = vtiger_crmentity.crmid WHERE vtiger_crmentity.deleted = ? AND vtiger_payments.payment_status = ? AND (vtiger_payments.payment_from = ? OR vtiger_payments.payment_from = ?) AND vtiger_crmentity.createdtime BETWEEN DATE_SUB(NOW(),INTERVAL 1 HOUR) AND DATE_SUB(NOW(),INTERVAL 15 MINUTE)";
+
+$paymentFrom = 'FasaPay';
+$res = $adb->pquery($paymentQuery, array(0, 'Pending', $paymentFrom, $paymentFrom));
+$noOfRecord = $adb->num_rows($res);
+
+$module = 'Payments';           
+$provider = ServiceProvidersManager::getActiveInstanceByProvider($paymentFrom);
+if (empty($provider))
+{
+    $providerErrorMessage = "Error : $paymentFrom Cron. Payment provider not found.";
+    $log->debug($providerErrorMessage);
+    return;
+}
+
+if (isset($provider->parameters['auto_confirm']) && $provider->parameters['auto_confirm'] == 'Yes')
+{
+    if ($noOfRecord > 0)
+    {
+        for ($i = 0; $i < $noOfRecord; $i++)
+        {
+            $response = [];
+            $payment_operation = $adb->query_result($res, $i, 'payment_operation');
+            $payment_status = $adb->query_result($res, $i, 'payment_status');
+            $payment_from = $adb->query_result($res, $i, 'payment_from');
+            $order_id = $adb->query_result($res, $i, 'order_id');
+            $record_id = $adb->query_result($res, $i, 'paymentsid');
+            $amount = $adb->query_result($res, $i, 'amount');
+            $contactid = $adb->query_result($res, $i, 'contactid');
+            $payment_currency = $adb->query_result($res, $i, 'payment_currency');
+            $payment_process = $adb->query_result($res, $i, 'payment_process');
+            $payment_type = $adb->query_result($res, $i, 'payment_type');
+            $payment_to = $adb->query_result($res, $i, 'payment_to');
+            $assigned_user_id = $adb->query_result($res, $i, 'smownerid');
+            $payment_ref_id = $adb->query_result($res, $i, 'payment_ref_id');
+            $paymentMethod = $payment_from;
+            $log->debug('loop-'.$i.'--'.$order_id);
+
+            $paymentLogQuery = "SELECT * FROM vtiger_payment_logs WHERE order_id = ? AND event = ?";
+            $paymentLogResult = $adb->pquery($paymentLogQuery, array($order_id, 'Fasapay Status Form Callback'));
+            $paymentLogJsonData = $adb->query_result($paymentLogResult, 0, 'data');
+            $log->debug('$paymentLogJsonData=');
+            $log->debug($paymentLogJsonData);
+                
+                    $postData = array(
+                        'record_id' => '39x' . $record_id,
+                        'payment_operation' => $payment_operation,
+                        'assigned_user_id' => '19x'.$assigned_user_id,
+                        'amount' => $amount,
+                        'contactid' => '12x' . $contactid,
+                        'payment_currency' => $payment_currency,
+                        'payment_process' => $payment_process,
+                        'payment_type' => $payment_type,
+                        'payment_from' => $payment_from,
+                        'payment_to' => $payment_to,
+                    );
+                    $record = '39x' . $record_id;
+            
+            if (!empty($paymentLogJsonData))
+            {
+                $paymentLogData = json_decode(html_entity_decode($paymentLogJsonData), true);$log->debug('$paymentLogData=');$log->debug($paymentLogData);
+                
+                if(!empty($paymentLogData['fp_batchnumber']))
+                {
+                    $log->debug('tansaction success');
+                    $status = 'Success';
+                }
+                else
+                {
+                    $log->debug('Batch number not exist');
+                    $status = 'Failed';
+//                    createPaymentLog($order_id, $paymentFrom, $paymentMethod, 'Batch number not exist', 'Failed');
+                } 
+            }
+            else
+            {
+                $log->debug('Status form callback not exist');
+                $status = 'Failed';
+//                createPaymentLog($order_id, $paymentFrom, $paymentMethod, 'Status form callback not exist', 'Failed');
+            }
+            if(!empty($status))
+            {
+                confirmProcess($order_id, $status, $paymentLogData, $provider, $postData, $module, $record, $record_id);
+        }
+    }
+}
+}
+else
+{
+    $providerErrorMessage = "Inactive $paymentFrom Cron. Payment mode is Manual.";
+    $log->debug($providerErrorMessage);
+}
+
+function confirmProcess($order_id, $status, $paymentLogData, $provider, $postData, $module, $record, $record_id) {
+    global $log;
+    $log->debug('Entering into confirmProcess...');
+    $recordModel = Vtiger_Record_Model::getInstanceById($record_id, 'Payments');
+    $recordModel->set('mode', 'edit');
+    if ($status == 'Success')
+    {
+        $recordModel->set('payment_status', 'InProgress');
+        $paymentLogData['message'] = "Success : FasaPay Cron Response. Payment is paid. ID : " . $record;
+    } 
+    else
+    {
+        $rejectMsg = 'Payment cancelled by FasaPay cron';
+        $paymentLogData['message'] = $rejectMsg;
+        $recordModel->set('reject_reason', $rejectMsg);
+        $recordModel->set('payment_status', 'Failed');
+    }
+    $recordModel->save();
+    $paymentLogJsonData = json_encode($paymentLogData);
+    createPaymentLog($order_id, $postData['payment_from'], $postData['payment_from'], $paymentLogJsonData, $status);
+    return true;
+}
+
+function createPaymentLog($order_id, $provider_type, $provider_title, $request, $status = 'Created')
+{
+    global $adb;
+    $req = json_encode($request);
+    $date = date('Y-m-d h:i:s');
+    $query = "INSERT INTO `vtiger_payment_logs` (`order_id`, `provider_type`, `provider_title`,`data`, `status`, `event`, `createdtime`) VALUES ('$order_id','$provider_type','$provider_title','$req','$status','$provider_title Cron Response','$date')";
+    $result = $adb->pquery($query, array());
+    if ($result)
+        return true;
+    else
+        return false;
+}
+?>

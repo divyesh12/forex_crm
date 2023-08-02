@@ -1,0 +1,133 @@
+Local :
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/bitcoin_qr_code.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Crypto Manual.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/FasaPay.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Indian Bank.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Indian Bank1.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Neteller.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Paypal.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/QuickPay.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/RazorPay.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Skrill.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Wallet.png
+
+QA :
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Indian Bank.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Skrill.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/RazorPay.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Wallet.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/FasaPay.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Crypto Manual.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Neteller.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Crypto Manual.png
+
+Pre Production :
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Wallet.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Indian Bank.png
+
+CRM Demo :
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Wallet.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Indian Bank.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/RazorPay.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Paypal.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Skrill.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Crypto Manual.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/B2BinPay.png
+
+TP Global FX :
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Wallet.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/BankWire.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/BankWire.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/RazorPay.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/BTC.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/QuickPay.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Crypto Manual.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Nigeria Local Naira Bank AC.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Nigeria Local Bank.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Bank 01.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Bank 02.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/BRAC Bank Bangladesh.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/DBBL Bank Bangladesh.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/B2BinPay.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/B2BinPay.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/USDT (TRC20).png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/USDT (ERC20).png
+
+Enclave FX :
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Wallet.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Bitcoin.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/BankWire.png
+
+FX Wonders : (FTP Not Working)
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Wallet.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Manual Bank Wire.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Skrill Auto Payment.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/BitCoin Deposit.png
+
+Alpha FX :
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Wallet.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Bank Transfer.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Paypal.png
+
+Graphene FX :
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Wallet.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Bank Transfer.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/BTC Payment.png
+
+GBC FX :
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Wallet.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/BTC Wallet.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Crypto Wallet ERC20.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Crypto Wallet TRC 20.png
+
+FX Opulence :
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Wallet.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Bitcoin.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/USDT ERC20.png
+
+Money Plant FX :
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Wallet.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Bank Transfer.png
+
+Rox Capitals :
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Wallet.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Crypto Manual.png
+/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Bank Transfer.png
+
+
+--------------------------------------------------------------------------------------------------------------
+
+
+TP Global FX QR :
+BTC : 13d8KxzmkBrsVGisiGiadeLXRY6FKSqe3Q (Image and link Not available)
+https://crm.tpglobalfx.com/layouts/v7/modules/Settings/ServiceProviders/payments_logo/usdt_qr_code.png
+https://crm.tpglobalfx.com/layouts/v7/modules/Settings/ServiceProviders/payments_logo/trc_qr_code.png
+https://crm.tpglobalfx.com/layouts/v7/modules/Settings/ServiceProviders/payments_logo/usdt_qr_code.png
+
+
+Enclave FX QR :
+https://crm.enclavefx.com/layouts/v7/modules/Settings/ServiceProviders/payments_logo/bitcoin_qr_code.png
+
+
+FX Wonders QR : 
+https://crm.fxwonders.com/layouts/v7/modules/Settings/ServiceProviders/payments_logo/bitcoin_qr_code.png
+
+
+Graphene FX QR :
+https://crm.graphenefx.com/layouts/v7/modules/Settings/ServiceProviders/payments_logo/BTC_Original.png
+
+
+GBC FX QR :
+https://crm.gbcfx.com/layouts/v7/modules/Settings/ServiceProviders/payments_logo/BTC_Wallet.jfif 
+https://crm.gbcfx.com/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Crypto Wallet ERC20.jfif (Image Not available)
+https://crm.gbcfx.com/layouts/v7/modules/Settings/ServiceProviders/payments_logo/Crypto Wallet TRC 20.jfif (Image Not available)
+
+
+FX Opulence QR :
+https://crm.fxopulence.com/layouts/v7/modules/Settings/ServiceProviders/payments_logo/bitcoin_qr_code.png
+https://crm.fxopulence.com/layouts/v7/modules/Settings/ServiceProviders/payments_logo/USDT_qr_code.png
+
+
+Rox Capitals QR :
+https://crm.roxcapitals.com/layouts/v7/modules/Settings/ServiceProviders/payments_logo/ECR20walletaddress.png
+

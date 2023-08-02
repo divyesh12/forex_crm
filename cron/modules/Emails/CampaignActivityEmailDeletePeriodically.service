@@ -1,0 +1,46 @@
+<?php
+
+/* * *******************************************************************************
+ * * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is:  vtiger CRM Open Source
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (C) vtiger.
+ * All Rights Reserved.
+ *
+ * ****************************************************************************** */
+
+require_once('include/utils/utils.php');
+require_once('include/logging.php');
+
+global $adb, $log, $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID;
+$log =& LoggerManager::getLogger('CampaignActivityEmailDeletePeriodically');
+$log->debug("invoked CampaignActivityEmailDeletePeriodically");
+
+$currentDate = date('Y-m-d');
+$currentDateStrTime = strtotime($currentDate);
+
+$db = PearDatabase::getInstance();
+
+$query = "SELECT mailid FROM `vtiger_email_track`
+INNER JOIN vtiger_crmentity vc1 ON vc1.crmid = vtiger_email_track.mailid
+INNER JOIN vtiger_crmentity vc2 ON vc2.crmid = vtiger_email_track.crmid
+WHERE vc2.setype = 'CampaignActivity' AND DATE_FORMAT(vc1.createdtime,'%Y-%m-%d') < DATE_FORMAT(date_sub(now(),INTERVAL 1 MONTH),'%Y-%m-%d')";
+$emailResult = $db->pquery($query, array());
+$noOfEmails = $db->num_rows($emailResult);
+
+if($noOfEmails > 0)
+{
+    for($i=0; $i<$noOfEmails;$i++)
+    {
+        $recordIdsArr[] = $db->query_result($emailResult, $i, 'mailid');
+    }
+    
+    $recordIds = implode("','", $recordIdsArr);
+
+    $query = 'UPDATE vtiger_crmentity SET description = "" WHERE crmid in('.generateQuestionMarks($recordIds).')';
+    $db->pquery($query, array($recordIdsArr));
+}
+
+
+?>

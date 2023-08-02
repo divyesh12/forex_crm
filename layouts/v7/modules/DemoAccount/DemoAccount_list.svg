@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+    <title>Demo Account  - black</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Demo-Account----black" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="chart-square-bar" transform="translate(2.000000, 2.000000)" stroke="#777777" stroke-width="2">
+            <path d="M15,5 L15,15 M10,8.75 L10,15 M5,12.5 L5,15 M2.5,20 L17.5,20 C18.88075,20 20,18.88075 20,17.5 L20,2.5 C20,1.1192875 18.88075,0 17.5,0 L2.5,0 C1.1192875,0 0,1.1192875 0,2.5 L0,17.5 C0,18.88075 1.1192875,20 2.5,20 Z" id="Shape"></path>
+        </g>
+    </g>
+</svg>

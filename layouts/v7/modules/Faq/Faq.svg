@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+    <title>FAQ</title>
+    <desc>Created with Sketch.</desc>
+    <g id="FAQ" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="question-mark-circle" transform="translate(3.000000, 3.000000)" stroke="#F2F1F1" stroke-width="2">
+            <path d="M5.22766,6 C5.77678,4.83481 7.2584,4 9.0001,4 C11.2092,4 13.0001,5.34315 13.0001,7 C13.0001,8.3994 11.7224,9.5751 9.9943,9.9066 C9.4519,10.0106 9.0001,10.4477 9.0001,11 M18,9 C18,13.9706 13.9706,18 9,18 C4.02944,18 0,13.9706 0,9 C0,4.02944 4.02944,0 9,0 C13.9706,0 18,4.02944 18,9 Z M9,13.8669578 L9,14.3669578" id="Shape"></path>
+        </g>
+    </g>
+</svg>

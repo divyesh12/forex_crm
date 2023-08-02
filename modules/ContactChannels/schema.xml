@@ -1,0 +1,29 @@
+<?xml version='1.0'?>
+<schema>
+	<tables>
+		<table>
+			<name>vtiger_contactchannels</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_contactchannels` (
+                                                  `contactchannelsid` int(11) NOT NULL ,
+                                                  `channel` varchar(255) DEFAULT NULL,
+                                                  PRIMARY KEY (`contactchannelsid`)
+                                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+		<table>
+			<name>vtiger_contactchannelscf</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_contactchannelscf` (
+                                                  `contactchannelsid` int(11) NOT NULL,
+                                                  PRIMARY KEY (`contactchannelsid`)
+                                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+		<table>
+			<name>vtiger_contactchannels_user_field</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_contactchannels_user_field` (
+                                                                        `recordid` int(25) NOT NULL,
+                                                                        `userid` int(25) NOT NULL,
+                                                                        `starred` varchar(100) DEFAULT NULL,
+                                                                        KEY `fk_contactchannelsid_vtiger_contactchannels_user_field` (`recordid`)
+                                                                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+	</tables>
+</schema>

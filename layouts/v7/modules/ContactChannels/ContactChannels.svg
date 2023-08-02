@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+    <title>Contact Symbol</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Contact-Symbol" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7,8.11111111 C7,7.49746111 7.49746111,7 8.11111111,7 L9.93291111,7 C10.1720389,7 10.3843389,7.15301667 10.4599556,7.37987222 L11.2920556,9.87622778 C11.3795,10.1385111 11.2607778,10.4251722 11.0135,10.5488167 L9.75945,11.1758333 C10.3718056,12.534 11.466,13.6282222 12.8241667,14.2405556 L13.4511667,12.9865 C13.5748333,12.7392222 13.8615,12.6205 14.1237778,12.7079444 L16.6201111,13.5400556 C16.847,13.6156667 17,13.8279444 17,14.0671111 L17,15.8888889 C17,16.5025556 16.5025556,17 15.8888889,17 L15.3333333,17 C10.7309611,17 7,13.2690556 7,8.66666667 L7,8.11111111 Z" id="Path" stroke="#F2F1F1" stroke-width="1.9"></path>
+        <circle id="Oval" stroke="#F2F1F1" stroke-width="2" cx="12" cy="12" r="10"></circle>
+    </g>
+</svg>

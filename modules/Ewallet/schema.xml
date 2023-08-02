@@ -1,0 +1,29 @@
+<?xml version='1.0'?>
+<schema>
+	<tables>
+		<table>
+			<name>vtiger_ewallet</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_ewallet` (
+                                                  `ewalletid` int(11) NOT NULL ,
+                                                  `contactid` varchar(255) DEFAULT NULL,
+                                                  PRIMARY KEY (`ewalletid`)
+                                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+		<table>
+			<name>vtiger_ewalletcf</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_ewalletcf` (
+                                                  `ewalletid` int(11) NOT NULL,
+                                                  PRIMARY KEY (`ewalletid`)
+                                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+		<table>
+			<name>vtiger_ewallet_user_field</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_ewallet_user_field` (
+                                                                        `recordid` int(25) NOT NULL,
+                                                                        `userid` int(25) NOT NULL,
+                                                                        `starred` varchar(100) DEFAULT NULL,
+                                                                        KEY `fk_ewalletid_vtiger_ewallet_user_field` (`recordid`)
+                                                                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+	</tables>
+</schema>

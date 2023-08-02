@@ -1,0 +1,29 @@
+<?xml version='1.0'?>
+                                                                                    <schema>
+                                                                                          <tables>
+                                                                                                <table>
+                                                                                                      <name>vtiger_ibcommissionprofileitems</name>
+                                                                                                      <sql><![CDATA[CREATE TABLE `vtiger_ibcommissionprofileitems` (
+                                                                                        `ibcommissionprofileitemsid` int(11) NOT NULL DEFAULT '0',
+                                                                                          `ib_commission_value` decimal(13,2) DEFAULT NULL,
+                                                                                          PRIMARY KEY (`ibcommissionprofileitemsid`)
+                                                                                      ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+                                                                                                </table>
+                                                                                                <table>
+                                                                                                      <name>vtiger_ibcommissionprofileitemscf</name>
+                                                                                                      <sql><![CDATA[CREATE TABLE `vtiger_ibcommissionprofileitemscf` (
+                                                                                      `ibcommissionprofileitemsid` int(11) NOT NULL,
+                                                                                      PRIMARY KEY (`ibcommissionprofileitemsid`)
+                                                                                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+                                                                                                </table>
+                                                                                                <table>
+                                                                                                      <name>vtiger_ibcommissionprofileitems_user_field</name>
+                                                                                                      <sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_ibcommissionprofileitems_user_field` (
+                                                                                                      `recordid` int(25) NOT NULL,
+                                                                                                      `userid` int(25) NOT NULL,
+                                                                                                      `starred` varchar(100) DEFAULT NULL,
+                                                                                                      KEY `fk_ibcommissionprofileitemsid_vtiger_ibcommissionprofileitems_user_field` (`recordid`)
+                                                                                                      ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+                                                                                          </table>
+                                                                                          </tables>
+                                                                                    </schema>

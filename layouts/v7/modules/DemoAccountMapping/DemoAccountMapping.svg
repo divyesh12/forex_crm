@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+    <title>Demo Account Mapping</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Demo-Account-Mapping" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="presentation-chart-bar" transform="translate(-62.000000, 2.000000)" stroke="#F2F1F1" stroke-width="2">
+            <path d="M69,14.9038462 L69,12.6538462 M74,14.9038462 L74,8.90384615 M79,14.9038462 L79,5.15384615 M64,0 L84,0 L84,18.4615385 C84,19.3112308 83.440375,20 82.75,20 L65.25,20 C64.55965,20 64,19.3112308 64,18.4615385 L64,0 Z" id="Shape"></path>
+        </g>
+    </g>
+</svg>

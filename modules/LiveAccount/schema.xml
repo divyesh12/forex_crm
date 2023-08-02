@@ -1,0 +1,29 @@
+<?xml version='1.0'?>
+<schema>
+      <tables>
+            <table>
+                  <name>vtiger_liveaccount</name>
+                  <sql><![CDATA[CREATE TABLE `vtiger_liveaccount` (
+                                                  `liveaccountid` int(11) NOT NULL ,
+                                                  `account_no` bigint(11) DEFAULT NULL,
+                                                  PRIMARY KEY (`liveaccountid`)
+                                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+            </table>
+            <table>
+                  <name>vtiger_liveaccountcf</name>
+                  <sql><![CDATA[CREATE TABLE `vtiger_liveaccountcf` (
+                                                  `liveaccountid` int(11) NOT NULL,
+                                                  PRIMARY KEY (`liveaccountid`)
+                                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+            </table>
+            <table>
+                  <name>vtiger_liveaccount_user_field</name>
+                  <sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_liveaccount_user_field` (
+                                                                        `recordid` int(25) NOT NULL,
+                                                                        `userid` int(25) NOT NULL,
+                                                                        `starred` varchar(100) DEFAULT NULL,
+                                                                        KEY `fk_liveaccountid_vtiger_liveaccount_user_field` (`recordid`)
+                                                                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+            </table>
+      </tables>
+</schema>

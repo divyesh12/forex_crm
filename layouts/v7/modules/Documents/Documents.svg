@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+    <title>Documents</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Documents" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="document-text" transform="translate(4.000000, 2.000000)" stroke="#F2F1F1" stroke-width="2">
+            <path d="M4.57142857,10 L11.4285714,10 M4.57142857,14.4444444 L11.4285714,14.4444444 M13.7142857,20 L2.28571429,20 C1.02334857,20 0,19.0051111 0,17.7777778 L0,2.22222222 C0,0.994922222 1.02334857,0 2.28571429,0 L8.66948571,0 C8.97257143,0 9.26331429,0.117066667 9.4776,0.325433333 L15.6652571,6.34123333 C15.8795429,6.5496 16,6.83222222 16,7.1269 L16,17.7777778 C16,19.0051111 14.9766857,20 13.7142857,20 Z" id="Shape"></path>
+        </g>
+    </g>
+</svg>

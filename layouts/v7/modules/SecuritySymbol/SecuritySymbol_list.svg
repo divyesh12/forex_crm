@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+    <title>Security Symbol  - black</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Security-Symbol----black" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="shield-check" transform="translate(2.000000, 2.000000)" stroke="#777777" stroke-width="2">
+            <path d="M6.66666667,10.2453153 L8.88888889,12.5080582 L13.3333333,7.98257235 M19.5754444,3.43936924 C19.348,3.45111287 19.1191111,3.45705257 18.8888889,3.45705257 C15.4738889,3.45705257 12.3588889,2.14982073 9.99988889,0 C7.64101111,2.14974154 4.52598889,3.45691681 1.11111111,3.45691681 C0.880855556,3.45691681 0.651977778,3.45097711 0.424588889,3.43923347 C0.147444444,4.52943433 0,5.67278701 0,6.85121221 C0,13.1772644 4.24924444,18.4927869 10,20 C15.7507778,18.4927869 20,13.1772644 20,6.85121221 C20,5.67284358 19.8525556,4.52952484 19.5754444,3.43936924 Z" id="Shape"></path>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,54 @@
+<?php
+
+/* * *******************************************************************************
+ * * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is:  vtiger CRM Open Source
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (C) vtiger.
+ * All Rights Reserved.
+ *
+ * ****************************************************************************** */
+
+require_once('include/utils/utils.php');
+require_once('include/logging.php');
+
+require_once('modules/ServiceProviders/ServiceProviders.php');
+
+/* Creator:- Divyesh Chothani
+ * Comments:- Expriration Date Updation of DemoAccount
+ * Date:- 11-01-2017
+ */
+global $adb, $log;
+
+$today_date = date("Y-m-d");
+$sql = "SELECT vtiger_demoaccount.account_no,vtiger_demoaccount.demoaccountid,vtiger_demoaccount.is_account_disable,vtiger_demoaccount.account_expriry_date,vtiger_demoaccount.metatrader_type FROM vtiger_demoaccount INNER JOIN vtiger_crmentity ON vtiger_demoaccount.demoaccountid = vtiger_crmentity.crmid WHERE vtiger_crmentity.deleted = ? AND vtiger_demoaccount.is_account_disable = ? AND vtiger_demoaccount.account_expriry_date =? ";
+$result = $adb->pquery($sql, array(0,0,$today_date));
+$no_of_demoaccont = $adb->num_rows($result);
+
+for ($i = 0; $i < $no_of_demoaccont; $i++) {
+    $account_expriry_date = $adb->query_result($result, $i, 'account_expriry_date');
+    $demoaccountid = $adb->query_result($result, $i, 'demoaccountid');
+    $account_no = $adb->query_result($result, $i, 'account_no');
+    $metatrader_type = $adb->query_result($result, $i, 'metatrader_type');
+    
+    // $filepath = "modules/ServiceProviders/providers/{$metatrader_type}.php";
+    // checkFileAccessForInclusion($filepath);
+    
+    $provider = ServiceProvidersManager::getActiveInstanceByProvider($metatrader_type);
+    if(empty($provider)){
+        echo "Seems to be issue from service provider side. Please contact your administrator."; 
+        exit;
+    }
+    if (strtotime($today_date) ==  strtotime($account_expriry_date)) {
+        $account_disable_result = $provider->demoaccountDisable($account_no);
+        $account_disable_code = $account_disable_result->Code;
+        $account_disable_messege = $account_disable_result->Message;
+        if ($account_disable_messege == 'Ok' && $account_disable_code == 200) {
+            $adb->pquery("UPDATE `vtiger_demoaccount` SET `is_account_disable`=? WHERE demoaccountid =?", array(1, $demoaccountid));
+        }else{
+        	echo $error_messege = "DEMOACCOUNT ".$account_no." ".$account_disable_result->Message."<br>";
+        }
+    }
+}
+?>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+    <title>Email Template  - black</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Email-Template----black" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="mail-open" transform="translate(2.000000, 2.000000)" stroke="#777777" stroke-width="2">
+            <path d="M0,17.7267965 L0,7.57739725 C0,6.81729482 0.371333333,6.10752111 0.989555556,5.68592141 L8.76733333,0.381787377 C9.51377778,-0.127262459 10.4862222,-0.127262459 11.2326667,0.381787377 L19.0104444,5.68592141 C19.6286667,6.10752111 20,6.81729482 20,7.57739725 L20,17.7267965 M0,17.7267965 C0,18.9822868 0.994922222,20 2.22222222,20 L17.7777778,20 C19.0051111,20 20,18.9822868 20,17.7267965 M0,17.7267965 L7.5,12.6120885 M20,17.7267965 L12.5,12.6120885 M0,7.49736912 L7.5,12.6120885 M20,7.49736912 L12.5,12.6120885 M12.5,12.6120885 L11.2326667,13.4763605 C10.4862222,13.9854444 9.51377778,13.9854444 8.76733333,13.4763605 L7.5,12.6120885" id="Shape"></path>
+        </g>
+    </g>
+</svg>

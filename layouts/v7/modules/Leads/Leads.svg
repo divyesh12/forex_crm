@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+    <title>Leads</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Leads" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="user-group" transform="translate(2.000000, 4.000000)" stroke="#F2F1F1" stroke-width="2">
+            <path d="M15,16 L20,16 L20,14 C20,12.3431 18.6569,11 17,11 C16.0444,11 15.1931,11.4468 14.6438,12.1429 M15,16 L5,16 M15,16 L15,14 C15,13.3438 14.8736,12.717 14.6438,12.1429 M5,16 L0,16 L0,14 C0,12.3431 1.34315,11 3,11 C3.95561,11 4.80686,11.4468 5.35625,12.1429 M5,16 L5,14 C5,13.3438 5.12642,12.717 5.35625,12.1429 M5.35625,12.1429 C6.0935,10.301 7.89482,9 10,9 C12.1052,9 13.9065,10.301 14.6438,12.1429 M13,3 C13,4.65685 11.6569,6 10,6 C8.3431,6 7,4.65685 7,3 C7,1.34315 8.3431,0 10,0 C11.6569,0 13,1.34315 13,3 Z M19,6 C19,7.1046 18.1046,8 17,8 C15.8954,8 15,7.1046 15,6 C15,4.89543 15.8954,4 17,4 C18.1046,4 19,4.89543 19,6 Z M5,6 C5,7.1046 4.10457,8 3,8 C1.89543,8 1,7.1046 1,6 C1,4.89543 1.89543,4 3,4 C4.10457,4 5,4.89543 5,6 Z" id="Shape"></path>
+        </g>
+    </g>
+</svg>

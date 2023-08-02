@@ -1,0 +1,105 @@
+<?php
+/*+***********************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is:  vtiger CRM Open Source
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (C) vtiger.
+ * All Rights Reserved.
+ *************************************************************************************/
+
+require_once('include/utils/utils.php');
+require_once('include/logging.php');
+require_once 'vtlib/Vtiger/Mailer.php';
+
+global $adb, $log, $root_directory, $ibStatistics_reportId;
+
+$log->debug("invoked EmailIBStatisticsReport");
+
+$filterQuery = "SELECT * FROM `vtiger_reportfilterdata` WHERE `status` = ?";
+$filterResult = $adb->pquery($filterQuery, array(0));
+$noOfRecord = $adb->num_rows($filterResult);
+
+if ($noOfRecord > 0)
+{
+    for ($i = 0; $i < $noOfRecord; $i++)
+    {
+            $reportFilterId = $adb->query_result($filterResult, $i, 'reportfilterid');
+            $update = "UPDATE `vtiger_reportfilterdata` SET `status` = ? WHERE `reportfilterid` = ?";
+            $adb->pquery($update, array(2, $reportFilterId));
+            
+            $reportId = $adb->query_result($filterResult, $i, 'reportid');
+            $userId = $adb->query_result($filterResult, $i, 'userid');
+            $filterData = $adb->query_result($filterResult, $i, 'filterdata');
+            $filterData = json_decode(html_entity_decode($filterData), true);
+            
+            $outputformat = 'PDF';
+            $operation = 'Email';
+            $filtersql = $filterData;
+            if ($reportId == $ibStatistics_reportId)
+            {
+                $emailData = Reports_Record_Model::getIBStatistics($outputformat, $operation, $filtersql,0,0);
+            }
+
+            if(!empty($emailData))
+            {
+                $userQuery = 'SELECT `email1` FROM `vtiger_users` WHERE `id` = ?';
+                $userResult = $adb->pquery($userQuery, array($userId));
+                $userEmail = $adb->query_result($userResult, 0, 'email1');
+
+                $filePath = $emailData['filePath'];
+                $fileName = $emailData['fileName'];
+                $mailSend = sendEmailAttachment($filePath, $fileName, $userEmail, $reportFilterId, $reportId);
+                if ($mailSend)
+                {
+                    $update = "UPDATE `vtiger_reportfilterdata` SET `status` = ? WHERE `reportfilterid` = ?";
+                    $adb->pquery($update, array(1, $reportFilterId));
+                }
+                else
+                {
+                    $update = "UPDATE `vtiger_reportfilterdata` SET `status` = ? WHERE `reportfilterid` = ?";
+                    $adb->pquery($update, array(0, $reportFilterId));
+                }
+            }
+            else
+            {
+                $update = "UPDATE `vtiger_reportfilterdata` SET `status` = ? WHERE `reportfilterid` = ?";
+                $adb->pquery($update, array(1, $reportFilterId));
+            }
+        }
+}
+
+function sendEmailAttachment($filePath, $fileName, $userEmail, $reportFilterId, $reportId)
+{
+    global $HELPDESK_SUPPORT_NAME,$HELPDESK_SUPPORT_EMAIL_ID, $site_URL,$log,$adb;
+    
+    $templName = 'Send Custom Report Email';
+    $templsql = "SELECT subject,body FROM vtiger_emailtemplates WHERE templatename LIKE '%$templName%'";
+    $templates = $adb->pquery($templsql);
+    $subject = $adb->query_result($templates, 0, 'subject');
+    
+    vimport('~modules/Report/models/Record.php');
+    $reportRecordModel = Reports_Record_Model::getInstanceById($reportId);
+    $currentTime = date('Y-m-d H:i:s');
+    $reportName = decode_html($reportRecordModel->getName());
+    $subject = str_replace('$report_name$', $reportName, $subject);
+    
+    $body = $adb->query_result($templates, 0, 'body');
+    $body = str_replace('$report_name$', $reportName, $body);
+    $body = getReplacedDescription($body);
+          
+    $mailer = Emails_Mailer_Model::getInstance();
+    $mailer->IsHTML(true);
+    $mailer->ConfigSenderInfo($HELPDESK_SUPPORT_EMAIL_ID, $HELPDESK_SUPPORT_NAME);
+    $mailer->Subject = $subject;
+    $mailer->Body = decode_html($body);
+    $mailer->AddAddress($userEmail, 'Admin'); //$userEmail
+    $mailer->AddAttachment($filePath.$fileName, decode_html($fileName));
+    $status = $mailer->Send(true);
+    $error = $mailer->getError();
+    if ($error) {
+        return false;
+    } else {
+        return true;
+    }
+}

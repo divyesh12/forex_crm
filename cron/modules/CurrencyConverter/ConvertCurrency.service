@@ -1,0 +1,61 @@
+<?php
+
+/* * *******************************************************************************
+ * * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is:  vtiger CRM Open Source
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (C) vtiger.
+ * All Rights Reserved.
+ *
+ * ****************************************************************************** */
+
+/* Creator:- Divyesh Chothani
+ * Comments:- Currency Convert Funcationality
+ * Date:- 06-10-2022
+ */
+
+require_once('include/utils/utils.php');
+require_once('include/logging.php');
+
+global $adb, $log,$currencyConvetrAPIKey;
+
+$todayDate = date('Y-m-d');
+$currentDayName = date('l', strtotime($todayDate));
+
+if($currentDayName !='Saturday' || $currentDayName !='Sunday'){
+    $query = "SELECT vtiger_currencyconverter.from_currency,GROUP_CONCAT(vtiger_currencyconverter.currencyconverterid) AS crmids,GROUP_CONCAT(vtiger_currencyconverter.to_currency) AS tocurrencies FROM  `vtiger_currencyconverter` INNER JOIN  vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_currencyconverter.currencyconverterid WHERE  vtiger_crmentity.deleted = 0 AND vtiger_currencyconverter.is_currency_value_auto = 1 GROUP BY vtiger_currencyconverter.from_currency";
+
+    $result = $adb->pquery($query, array());
+    $num_rows = $adb->num_rows($result);
+    $row_result = array();
+    if ($num_rows > 0) {
+        while ($row = $adb->fetchByAssoc($result)) {
+        
+            $fromCurrency = $row['from_currency'];
+            $crmIds = $row['crmids'];
+            $toCurrencies = $row['tocurrencies'];
+
+            $responce = getCurrencyConvertRate($fromCurrency,$toCurrencies);
+            if($responce['success']){
+                $apiCallingTime = gmdate("Y-m-d H:i:s", $responce['timestamp']);
+                if(!empty($responce['rates'])){
+                    $row_result[$responce['base']] = $responce['rates'];
+                }
+            }else{
+                $log->debug($responce['error']['code'].' -> '.$responce['error']['message'].' -> '.$responce['message'].' - Currency conversation API error');
+                echo $responce['error']['code'].' -> '.$responce['error']['message'].' -> '.$responce['message'].'- Currency conversation API error'; exit;
+            }
+        }
+        
+        foreach($row_result as $baseSybmol => $convertedValues){
+            foreach($convertedValues as $toSymbol=>$toSymbolValue){
+                $update = "UPDATE vtiger_currencyconverter SET conversion_rate = '$toSymbolValue',`rate_converted_datetime`= '$apiCallingTime' WHERE from_currency = '$baseSybmol' AND to_currency = '$toSymbol'";
+                $adb->pquery($update, array());
+            }
+        }
+        
+    }
+}else{
+    echo "API call only open market not weekend"; exit;
+}

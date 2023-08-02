@@ -1,0 +1,115 @@
+<?php
+
+require_once('include/utils/utils.php');
+require_once('include/logging.php');
+require_once('include/Webservices/Update.php');
+require_once('data/CRMEntity.php');
+require_once('modules/ServiceProviders/ServiceProviders.php');
+
+global $adb, $log;
+
+$provider = ServiceProvidersManager::getActiveInstanceByProvider('WorldPay');
+$sftpDetail = array(
+    'sftp_host' => $provider->getParameter('sftp_host'),
+    'sftp_port' => $provider->getParameter('sftp_port'),
+    'sftp_username' => $provider->getParameter('sftp_username'),
+    'sftp_password' => $provider->getParameter('sftp_password'),
+    'sftp_dart_filepath' => $provider->sftpDartFileLocation,
+    'supported_conversion' => $provider->supportedCurrencyConversion,
+);
+$successFileData = array(
+    'filename' => '311FXR',
+    'transaction_date' => '20230110',
+    'base_currency' => 4,
+    'converted_currency' => 2,
+    'conversion_rate' => 6,
+);
+$conversionData = readDartFile($successFileData, $sftpDetail);
+
+foreach($conversionData as $conversionPair => $conversionDetail)
+{
+    if(!empty($conversionDetail['conversion_rate']))
+    {
+        $updateCurrencyRateSql = "UPDATE vtiger_currencyconverter SET conversion_rate = ? WHERE from_currency = ? AND to_currency = ? AND operation_type = ?;";
+        $updateCurrencyRateResult = $adb->pquery($updateCurrencyRateSql, array($conversionDetail['conversion_rate'], $conversionDetail['from_currency'], $conversionDetail['to_currency'], 'Deposit'));
+    }
+}
+
+function readDartFile($fileData = array(), $sftpDetail = array())
+{
+    global $log;
+    $log->debug('Entering into readDartFile for currency conversion...');
+    $log->debug($fileData);
+    $log->debug($sftpDetail);
+    $fileName = $fileData['filename'];
+    $transactionDate = $fileData['transaction_date'];
+    $dartFile = 'WP_SSSS_'.$fileName.'_V03_'.$transactionDate.'_nnn.csv';
+    $transactionData = array();
+    $count = 0;
+    $fieldColumnMap = array('base_currency' => $fileData['base_currency'], 'converted_currency' => $fileData['converted_currency'], 'conversion_rate' => $fileData['conversion_rate']);
+
+    $host = $sftpDetail['sftp_host'];
+    $port = $sftpDetail['sftp_port'];
+    $username = $sftpDetail['sftp_username'];
+    $password = $sftpDetail['sftp_password'];
+    $connection = NULL;
+    $remoteFilePath = $sftpDetail['sftp_dart_filepath'].$dartFile;$log->debug('$remoteFilePath=');$log->debug($remoteFilePath);
+    try
+    {
+        $connection = ssh2_connect($host, $port);
+        if(!$connection)
+        {
+            throw new \Exception("Could not connect to $host on port $port");
+        }
+        $auth  = ssh2_auth_password($connection, $username, $password);
+        if(!$auth)
+        {
+            throw new \Exception("Could not authenticate with username $username and password ");  
+        }
+        $sftp = ssh2_sftp($connection);
+        if(!$sftp)
+        {
+            throw new \Exception("Could not initialize SFTP subsystem.");  
+        }
+
+        if (($handle = fopen("ssh2.sftp://".$sftp.$remoteFilePath, 'r')) !== FALSE)
+        {
+            while (($data = fgetcsv($handle, 110000, ",")) !== FALSE)
+            {
+                if($data[$count] == '2'){$count++; continue;}
+                if(!empty($data[$fieldColumnMap['base_currency']]) && !empty($data[$fieldColumnMap['conversion_rate']]))
+                {
+                    $baseCurrency = $data[$fieldColumnMap['base_currency']];
+                    $toCurrency = $data[$fieldColumnMap['converted_currency']];
+                    $conversionRate = $data[$fieldColumnMap['conversion_rate']];
+                    $currencySymbol = $baseCurrency.$toCurrency;
+                    if(!in_array($currencySymbol, $sftpDetail['supported_conversion']))
+                    {
+                        $count++;
+                        continue;
+                    }
+                    $transactionData[$currencySymbol]['conversion_rate'] = $conversionRate;
+                    $transactionData[$currencySymbol]['from_currency'] = $baseCurrency;
+                    $transactionData[$currencySymbol]['to_currency'] = $toCurrency;
+                }
+                $count++;
+            }
+            @fclose($data);
+            $connection = NULL;
+        }
+        else
+        {
+            $log->debug('Could not open file:');
+            throw new \Exception("Could not open file:");
+        }
+     }
+     catch (Exception $e)
+     {
+        $log->debug('Error due to :'.$e->getMessage());
+        echo "Error due to :".$e->getMessage();
+     }
+    $log->debug('$transactionData=');
+    $log->debug($transactionData);
+    return $transactionData;
+}
+?>

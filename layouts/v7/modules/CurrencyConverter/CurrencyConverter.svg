@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+    <title>Currency Converter</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Currency-Converter" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Group" transform="translate(4.000000, 2.000000)" stroke="#F2F1F1" stroke-width="2">
+            <path d="M0,4.13793103 L10.9655172,4.13793103 C14.0126207,4.13793103 16.4827586,6.60806897 16.4827586,9.65517241 L16.4827586,11.0344828 M1.59872116e-14,4.13793103 L4.13793103,8.27586207 M1.59872116e-14,4.13793103 L4.13793103,-1.28785871e-14" id="Shape"></path>
+            <path d="M5.68434189e-14,13.1034483 L10.9655172,13.1034483 C14.0126207,13.1034483 16.4827586,15.5735862 16.4827586,18.6206897 L16.4827586,20 M7.28306304e-14,13.1034483 L4.13793103,17.2413793 M7.28306304e-14,13.1034483 L4.13793103,8.96551724" id="Shape" transform="translate(8.241379, 14.482759) scale(-1, -1) translate(-8.241379, -14.482759) "></path>
+        </g>
+    </g>
+</svg>

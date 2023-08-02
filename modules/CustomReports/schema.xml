@@ -1,0 +1,29 @@
+<?xml version='1.0'?>
+                                                                                    <schema>
+                                                                                          <tables>
+                                                                                                <table>
+                                                                                                      <name>vtiger_customreports</name>
+                                                                                                      <sql><![CDATA[CREATE TABLE `vtiger_customreports` (
+                                                                                        `customreportsid` int(11) NOT NULL DEFAULT '0',
+                                                                                          `liveaccountid` varchar(255) DEFAULT NULL,
+                                                                                          PRIMARY KEY (`customreportsid`)
+                                                                                      ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+                                                                                                </table>
+                                                                                                <table>
+                                                                                                      <name>vtiger_customreportscf</name>
+                                                                                                      <sql><![CDATA[CREATE TABLE `vtiger_customreportscf` (
+                                                                                      `customreportsid` int(11) NOT NULL,
+                                                                                      PRIMARY KEY (`customreportsid`)
+                                                                                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+                                                                                                </table>
+                                                                                                <table>
+                                                                                                      <name>vtiger_customreports_user_field</name>
+                                                                                                      <sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_customreports_user_field` (
+                                                                                                      `recordid` int(25) NOT NULL,
+                                                                                                      `userid` int(25) NOT NULL,
+                                                                                                      `starred` varchar(100) DEFAULT NULL,
+                                                                                                      KEY `fk_customreportsid_vtiger_customreports_user_field` (`recordid`)
+                                                                                                      ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+                                                                                          </table>
+                                                                                          </tables>
+                                                                                    </schema>

@@ -1,0 +1,107 @@
+<?php
+
+require_once('include/utils/utils.php');
+require_once('include/logging.php');
+require_once('include/Webservices/Update.php');
+require_once('data/CRMEntity.php');
+require_once('modules/ServiceProviders/ServiceProviders.php');
+
+global $adb, $log;
+$eligiblePayMethodList = array('AwePay', 'Rapyd', 'B2binpay', 'VaultsPay', 'Match2Pay', 'VirtualPay', 'VirtualPayMobPay', 'Help2Pay', 'NowPay');
+$eligibleForePendingHandlerList = array('AwePay', 'Rapyd', 'B2binpay', 'VaultsPay', 'Match2Pay', 'VirtualPay', 'VirtualPayMobPay', 'Help2Pay', 'NowPay');
+$module = 'Payments';
+$serviceTypeList = ServiceProvidersManager::getActiveProviderList();
+
+foreach($serviceTypeList as $serverType)
+{
+    if(!in_array($serverType, $eligiblePayMethodList))
+    {
+        continue;
+    }
+    $provider = ServiceProvidersManager::getActiveInstanceByProvider($serverType);
+    if (isset($provider->parameters['auto_confirm']) && $provider->parameters['auto_confirm'] == 'Yes')
+    {
+        $providerWiseTimeQuery = $provider->getPendingRecordDurationQuery();
+        $paymentQuery = "SELECT vtiger_payments.*,vtiger_crmentity.createdtime,vtiger_crmentity.smownerid FROM vtiger_payments "
+                . "INNER JOIN vtiger_crmentity ON vtiger_payments.paymentsid = vtiger_crmentity.crmid "
+                . "WHERE vtiger_crmentity.deleted = ? AND vtiger_payments.payment_status = ? AND vtiger_payments.payment_from = ? " . $providerWiseTimeQuery;
+        $paymentQueryResult = $adb->pquery($paymentQuery, array(0, 'Pending', $serverType));
+        $noOfPendingRecord = $adb->num_rows($paymentQueryResult);
+        
+        if ($noOfPendingRecord > 0)
+        {
+            for ($i = 0; $i < $noOfPendingRecord; $i++)
+            {
+                $paymentResponse = array();
+                $paymentData['paymentsid'] = $recordId = $adb->query_result($paymentQueryResult, $i, 'paymentsid');
+                $paymentData['order_id'] = $adb->query_result($paymentQueryResult, $i, 'order_id');
+                $paymentData['payment_ref_id'] = $adb->query_result($paymentQueryResult, $i, 'payment_ref_id');
+                $paymentData['payment_from'] = $adb->query_result($paymentQueryResult, $i, 'payment_from');
+                $paymentData['payment_date'] = $adb->query_result($paymentQueryResult, $i, 'createdtime');
+                
+                $paymentStatusResponse = $provider->getPaymentCurrentStatus($paymentData);
+                $log->debug('$paymentStatusResponse=');
+                $log->debug($paymentStatusResponse);
+                $paymentResponse['data'] = $paymentStatusResponse['data'];
+                $paymentResponse['status'] = $paymentStatus = $paymentStatusResponse['status'];
+                $rejectMsg = isset($paymentStatusResponse['message']) && !empty($paymentStatusResponse['message']) ? $paymentStatusResponse['message'] : '';
+                
+                $recordModel = Vtiger_Record_Model::getInstanceById($recordId, 'Payments');$log->debug('after $recordModel');$log->debug($paymentData['order_id']);
+                $recordModel->set('mode', 'edit');
+                if($paymentStatus == "success")
+                {
+                    $recordModel->set('payment_status', 'InProgress');
+                    $paymentResponse['message'] = "";
+                }
+                else if($paymentStatus == "cancelled")
+                {
+                    if(!empty($rejectMsg))
+                    {
+                        $rejectMsg = 'Payment cancelled by ' . $serverType . ' cron';
+                    }
+                    $paymentResponse['message'] = $rejectMsg;
+                    $recordModel->set('failure_reason', $rejectMsg);
+                    $recordModel->set('payment_status', 'Cancelled');
+                }
+                else if($paymentStatus == "failed")
+                {
+                    if(!empty($rejectMsg))
+                    {
+                        $rejectMsg = 'Payment failed by ' . $serverType . ' cron';
+                    }
+                    $paymentResponse['message'] = $rejectMsg;
+                    $recordModel->set('failure_reason', $rejectMsg);
+                    $recordModel->set('payment_status', 'Failed');
+                }
+                else
+                {
+                    continue;
+                }
+                $recordModel->save();$log->debug('after save..'.$paymentData['order_id']);
+                createPaymentLog($paymentData['order_id'], $paymentData['payment_from'], $serverType, $paymentResponse, ucfirst($paymentStatus));
+                $log->debug('after createPaymentLog..');
+            }
+        }
+        
+        if(in_array($serverType, $eligibleForePendingHandlerList))
+        {
+            $providerRecordHandlerQuery = $provider->getPendingRecordHandlerQuery();
+            $pendingRecordQuery = "SELECT vtiger_payments.*,vtiger_crmentity.createdtime,vtiger_crmentity.smownerid FROM vtiger_payments "
+                . "INNER JOIN vtiger_crmentity ON vtiger_payments.paymentsid = vtiger_crmentity.crmid "
+                . "WHERE vtiger_crmentity.deleted = ? AND vtiger_payments.payment_status = ? AND vtiger_payments.payment_from = ? " . $providerRecordHandlerQuery;
+            $pendingRecordQueryResult = $adb->pquery($pendingRecordQuery, array(0, 'Pending', $serverType));
+            $noOfPendRecord = $adb->num_rows($pendingRecordQueryResult);
+            for ($j = 0; $j < $noOfPendRecord; $j++)
+            {
+                $pendingRecordId = $adb->query_result($pendingRecordQueryResult, $j, 'paymentsid');
+                $recordModel = Vtiger_Record_Model::getInstanceById($pendingRecordId, 'Payments');
+                $recordModel->set('mode', 'edit');
+                $rejectMsg = "Payment record failed by $serverType - pending record handler";
+                $recordModel->set('failure_reason', $rejectMsg);
+                $recordModel->set('payment_status', 'Failed');
+                $recordModel->save();
+            }
+        }
+    }
+}
+?>

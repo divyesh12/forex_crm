@@ -1,0 +1,166 @@
+<?xml version='1.0'?>
+                                                <module>
+                                                      <exporttime>2020-02-05 07:39:05</exporttime>
+                                                      <name>SecuritySymbol</name>
+                                                      <label>SecuritySymbol</label>
+                                                      <parent>TOOLS</parent>
+                                                      <version>7.0.1</version>
+                                                      <dependencies>
+                                                            <vtiger_version>7.0.1</vtiger_version>
+                                                      </dependencies>
+                                                      <tables>
+                                                            <table>
+                                                                  <name>vtiger_securitysymbol</name>
+                                                                  <sql><![CDATA[CREATE TABLE `vtiger_securitysymbol` (
+                                                  `securitysymbolid` int(11) NOT NULL ,
+                                                  `symbol_name` varchar(255) DEFAULT NULL,
+                                                  PRIMARY KEY (`securitysymbolid`)
+                                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+                                                            </table>
+                                                            <table>
+                                                                  <name>vtiger_securitysymbolcf</name>
+                                                                  <sql><![CDATA[CREATE TABLE `vtiger_securitysymbolcf` (
+                                                  `securitysymbolid` int(11) NOT NULL,
+                                                  PRIMARY KEY (`securitysymbolid`)
+                                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+                                                            </table>
+                                                            <table>
+                                                            <name>vtiger_securitysymbol_user_field</name>
+                                                            <sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_securitysymbol_user_field` (
+                                                                        `recordid` int(25) NOT NULL,
+                                                                        `userid` int(25) NOT NULL,
+                                                                        `starred` varchar(100) DEFAULT NULL,
+                                                                        KEY `fk_securitysymbolid_vtiger_securitysymbol_user_field` (`recordid`)
+                                                                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+                                                            </table>
+                                                      </tables>
+                                                      <blocks>
+                                                            <block>
+                                                                  <label>LBL_BASIC_INFORMATION</label>
+                                                                  <fields>
+                                                                        <field>
+                                                                              <fieldname>symbol_name</fieldname>
+                                                                              <uitype>1</uitype>
+                                                                              <columnname>symbol_name</columnname>
+                                                                              <tablename>vtiger_securitysymbol</tablename>
+                                                                              <generatedtype>1</generatedtype>
+                                                                              <fieldlabel>LBL_SYMBOL_NAME</fieldlabel>
+                                                                              <readonly>1</readonly>
+                                                                              <presence>2</presence>
+                                                                              <defaultvalue></defaultvalue>
+                                                                              <sequence>1</sequence>
+                                                                              <maximumlength>100</maximumlength>
+                                                                              <typeofdata>V~M</typeofdata>
+                                                                              <quickcreate>1</quickcreate>
+                                                                              <quickcreatesequence></quickcreatesequence>
+                                                                              <displaytype>1</displaytype>
+                                                                              <info_type>BAS</info_type>
+                                                                              <helpinfo><![CDATA[]]></helpinfo>
+                                                                              <masseditable>0</masseditable>
+                                                                              <summaryfield>0</summaryfield>
+                                                                              <entityidentifier>
+                                                                                    <entityidfield>securitysymbolid</entityidfield>
+                                                                                    <entityidcolumn>securitysymbolid</entityidcolumn>
+                                                                              </entityidentifier></field>
+                                                                  </fields>
+                                                            </block>
+                                                            <block>
+                                                                  <label>LBL_CUSTOM_INFORMATION</label>
+                                                                  <fields>
+                                                                        <field>
+                                                                              <fieldname>assigned_user_id</fieldname>
+                                                                              <uitype>53</uitype>
+                                                                              <columnname>smownerid</columnname>
+                                                                              <tablename>vtiger_crmentity</tablename>
+                                                                              <generatedtype>1</generatedtype>
+                                                                              <fieldlabel>Assigned To</fieldlabel>
+                                                                              <readonly>1</readonly>
+                                                                              <presence>2</presence>
+                                                                              <defaultvalue></defaultvalue>
+                                                                              <sequence>1</sequence>
+                                                                              <maximumlength>100</maximumlength>
+                                                                              <typeofdata>V~M</typeofdata>
+                                                                              <quickcreate>0</quickcreate>
+                                                                              <quickcreatesequence>0</quickcreatesequence>
+                                                                              <displaytype>1</displaytype>
+                                                                              <info_type>BAS</info_type>
+                                                                              <helpinfo><![CDATA[]]></helpinfo>
+                                                                              <masseditable>1</masseditable>
+                                                                              <summaryfield>0</summaryfield>
+                                                                        </field>
+                                                                        <field>
+                                                                              <fieldname>createdtime</fieldname>
+                                                                              <uitype>70</uitype>
+                                                                              <columnname>createdtime</columnname>
+                                                                              <tablename>vtiger_crmentity</tablename>
+                                                                              <generatedtype>1</generatedtype>
+                                                                              <fieldlabel>Created Time</fieldlabel>
+                                                                              <readonly>1</readonly>
+                                                                              <presence>2</presence>
+                                                                              <defaultvalue></defaultvalue>
+                                                                              <sequence>2</sequence>
+                                                                              <maximumlength>100</maximumlength>
+                                                                              <typeofdata>DT~O</typeofdata>
+                                                                              <quickcreate>0</quickcreate>
+                                                                              <quickcreatesequence>0</quickcreatesequence>
+                                                                              <displaytype>2</displaytype>
+                                                                              <info_type>BAS</info_type>
+                                                                              <helpinfo><![CDATA[]]></helpinfo>
+                                                                              <masseditable>0</masseditable>
+                                                                              <summaryfield>0</summaryfield>
+                                                                        </field>
+                                                                        <field>
+                                                                              <fieldname>modifiedtime</fieldname>
+                                                                              <uitype>70</uitype>
+                                                                              <columnname>modifiedtime</columnname>
+                                                                              <tablename>vtiger_crmentity</tablename>
+                                                                              <generatedtype>1</generatedtype>
+                                                                              <fieldlabel>Modified Time</fieldlabel>
+                                                                              <readonly>1</readonly>
+                                                                              <presence>2</presence>
+                                                                              <defaultvalue></defaultvalue>
+                                                                              <sequence>3</sequence>
+                                                                              <maximumlength>100</maximumlength>
+                                                                              <typeofdata>DT~O</typeofdata>
+                                                                              <quickcreate>0</quickcreate>
+                                                                              <quickcreatesequence>0</quickcreatesequence>
+                                                                              <displaytype>2</displaytype>
+                                                                              <info_type>BAS</info_type>
+                                                                              <helpinfo><![CDATA[]]></helpinfo>
+                                                                              <masseditable>0</masseditable>
+                                                                              <summaryfield>0</summaryfield>
+                                                                        </field>
+                                                                  </fields>
+                                                            </block>
+                                                      </blocks>
+                                                      <customviews>
+                                                            <customview>
+                                                                  <viewname>All</viewname>
+                                                                  <setdefault>true</setdefault>
+                                                                  <setmetrics>false</setmetrics>
+                                                                  <fields>
+                                                                        <field>
+                                                                              <fieldname>symbol_name</fieldname>
+                                                                              <columnindex>1</columnindex>
+                                                                        </field>
+                                                                        <field>
+                                                                              <fieldname>assigned_user_id</fieldname>
+                                                                              <columnindex>2</columnindex>
+                                                                        </field>
+                                                                        <field>
+                                                                              <fieldname>createdtime</fieldname>
+                                                                              <columnindex>3</columnindex>
+                                                                        </field>
+                                                                        <field>
+                                                                              <fieldname>modifiedtime</fieldname>
+                                                                              <columnindex>4</columnindex>
+                                                                        </field>
+                                                                  </fields>
+                                                            </customview>
+                                                      </customviews>
+                                                      <sharingaccess>
+                                                            <default>public_readwritedelete</default>
+                                                      </sharingaccess>
+                                                      <crons>
+                                                      </crons>
+                                                </module>

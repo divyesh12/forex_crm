@@ -1,0 +1,29 @@
+<?xml version='1.0'?>
+<schema>
+	<tables>
+		<table>
+			<name>vtiger_demoaccountmapping</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_demoaccountmapping` (
+                                                  `demoaccountmappingid` int(11) NOT NULL ,
+                                                  `start_range` bigint(11) DEFAULT NULL,
+                                                  PRIMARY KEY (`demoaccountmappingid`)
+                                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+		<table>
+			<name>vtiger_demoaccountmappingcf</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_demoaccountmappingcf` (
+                                                  `demoaccountmappingid` int(11) NOT NULL,
+                                                  PRIMARY KEY (`demoaccountmappingid`)
+                                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+		<table>
+			<name>vtiger_demoaccountmapping_user_field</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_demoaccountmapping_user_field` (
+                                                                        `recordid` int(25) NOT NULL,
+                                                                        `userid` int(25) NOT NULL,
+                                                                        `starred` varchar(100) DEFAULT NULL,
+                                                                        KEY `fk_demoaccountmappingid_vtiger_demoaccountmapping_user_field` (`recordid`)
+                                                                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+	</tables>
+</schema>
